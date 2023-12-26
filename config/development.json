@@ -1,0 +1,9 @@
+{
+  "db": {
+    "protocol": "mongodb+srv://",
+    "username": "abdella123",
+    "password": "abdella123",
+    "host": "devconn.idklvcu.mongodb.net/",
+    "options": "retryWrites=true&w=majority"
+  }
+}
