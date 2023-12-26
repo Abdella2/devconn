@@ -5,6 +5,8 @@ const connectToDB = require('./config/db');
 const app = express();
 connectToDB();
 
+app.use(express.json({ extended: false }));
+
 app.get('/', (req, res) => res.send('Wel Come to DevConn.'));
 
 app.use('/api/users', require('./routes/api/users'));
