@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.get('/me', auth, async (req, res) => {
   try {
-    const profile = await Profile.findOne({ userId: req.user.id }).populate(
+    const profile = await Profile.findOne({ user: req.user.id }).populate(
       'user',
       ['name', 'avatar']
     );
@@ -62,7 +62,7 @@ router.post(
     } = req.body;
 
     const profile = {};
-    profile.userId = req.user.id;
+    profile.user = req.user.id;
     if (company) profile.company = company;
     if (website) profile.website = website;
     if (location) profile.location = location;
@@ -79,10 +79,10 @@ router.post(
     if (instagram) profile.social = instagram;
 
     try {
-      let profileInDB = await Profile.findOne({ userId: req.user.id });
+      let profileInDB = await Profile.findOne({ user: req.user.id });
       if (profileInDB) {
         profileInDB = await Profile.findOneAndUpdate(
-          { userId: req.user.id },
+          { user: req.user.id },
           { $set: profile },
           { new: true }
         );
