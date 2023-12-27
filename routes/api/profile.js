@@ -22,6 +22,17 @@ router.get('/me', auth, async (req, res) => {
   }
 });
 
+// @desc get all profiles
+router.get('/', async (req, res) => {
+  try {
+    const profiles = await Profile.find().populate('user', 'name avatar');
+    return res.json(profiles);
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).send('Server error');
+  }
+});
+
 // @desc Create or update user profile
 router.post(
   '/',
