@@ -117,4 +117,17 @@ router.post(
   }
 );
 
+// @desc Delete profile, user and posts
+router.delete('/', auth, async (req, res) => {
+  try {
+    await Profile.deleteOne({ user: req.user.id });
+    await User.deleteOne({ _id: req.user.id });
+
+    return res.json({ msg: 'User deleted' });
+  } catch (err) {
+    console.log(err.message);
+    return res.status(500).send('Server error');
+  }
+});
+
 module.exports = router;
