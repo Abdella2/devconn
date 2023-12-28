@@ -183,4 +183,49 @@ router.delete('/experience/:exp_id', auth, async (req, res) => {
     return res.status(500).send('Server error');
   }
 });
+
+// @desc Add education to profile
+router.put(
+  '/education',
+  [
+    auth,
+    [
+      body('school', 'School is required').notEmpty(),
+      body('degree', 'Degree is required').notEmpty(),
+      body('fieldOfStudy', 'Field of study is required').notEmpty(),
+      body('from', 'From date is required').notEmpty()
+    ]
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty())
+      return res.status(404).json({ errors: errors.array() });
+
+    const { school, degree, fieldOfStudy, from, to, current, description } =
+      req.body;
+    const newEdu = {
+      school,
+      degree,
+      fieldOfStudy,
+      from,
+      to,
+      current,
+      description
+    };
+
+    try {
+      const profile = await Profile.findOne({ user: req.user.id });
+
+      profile.education.unshift(newEdu);
+
+      await profile.save();
+
+      return res.json(profile);
+    } catch (err) {
+      console.error(err.message);
+      return res.status(500).send('Server error');
+    }
+  }
+);
+
 module.exports = router;
