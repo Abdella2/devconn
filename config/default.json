@@ -1,3 +1,11 @@
 {
-  "jwtSecret": "jwtTokenSecret"
+  "jwtSecret": "jwtTokenSecret",
+  "github": {
+    "clientId": "4eaf22887ba3cb93554f",
+    "clientSecret": "a1a50c16084fb1375c9f67c641315bfbd3dfd8f8",
+    "host": "https://api.github.com",
+    "perPage": 5,
+    "sort": "created:asc",
+    "method": "GET"
+  }
 }
