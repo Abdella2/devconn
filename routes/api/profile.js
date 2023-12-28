@@ -22,6 +22,23 @@ router.get('/me', auth, async (req, res) => {
   }
 });
 
+// @desc get profile by userId
+router.get('/users/:user_id', async (req, res) => {
+  try {
+    const profile = await Profile.findOne({
+      user: req.params.user_id
+    }).populate('user', 'name avatar');
+    if (!profile) return res.status(404).json({ msg: 'Profile not found' });
+
+    return res.json(profile);
+  } catch (err) {
+    console.error(err.message);
+    if ((err.kind = 'ObjectId'))
+      return res.status(404).json({ msg: 'Profile not found' });
+    return res.status(500).send('Server error');
+  }
+});
+
 // @desc get all profiles
 router.get('/', async (req, res) => {
   try {
