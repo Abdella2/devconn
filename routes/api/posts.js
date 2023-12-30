@@ -171,4 +171,33 @@ router.put(
   }
 );
 
+// @desc Delete comment
+router.delete('/:post_id/comment/:comment_id', auth, async (req, res) => {
+  try {
+    const post = await Pst.findById(req.params.post_id);
+
+    if (!post) return res.status(404).json({ msg: 'Post not found' });
+
+    const comment = post.comments.find(
+      (comment) => comment.id.toString() === req.params.comment_id
+    );
+
+    if (!comment) return res.status(404).json({ msg: 'Comment not found' });
+
+    if (comment.user.toString() !== req.user.id)
+      return res.status(403).json({ msg: 'User not authorized' });
+
+    post.comments.remove(comment);
+
+    await post.save();
+
+    return res.json(post.comments);
+  } catch (err) {
+    console.error(err.message);
+    if (err.kind === 'ObjectId')
+      return res.status(404).json({ msg: 'Post not found' });
+    return res.status(500).send('Server error');
+  }
+});
+
 module.exports = router;
