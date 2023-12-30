@@ -136,4 +136,39 @@ router.put('/:post_id/unlike', auth, async (req, res) => {
   }
 });
 
+// @desc add comment
+router.put(
+  '/:post_id/comment',
+  [auth, body('text', 'Text is required').notEmpty()],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty())
+      return res.status(400).json({ errors: errors.array() });
+
+    try {
+      const post = await Pst.findById(req.params.post_id);
+
+      if (!post) return res.status(404).json({ msg: 'Post not found' });
+
+      const user = await User.findById(req.user.id);
+
+      post.comments.unshift({
+        user: req.user.id,
+        text: req.body.text,
+        name: user.name,
+        avatar: user.avatar
+      });
+
+      await post.save();
+
+      return res.json(post.comments);
+    } catch (err) {
+      console.error(err.message);
+      if (err.kind === 'ObjectId')
+        return res.status(404).json({ msg: 'Post not found' });
+      return res.status(500).send('Server error');
+    }
+  }
+);
+
 module.exports = router;
